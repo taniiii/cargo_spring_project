@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+    <title th:text="#{company.edit.profile}"></title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous"/>
+
+</head>
+<body>
+<div th:insert="parts/common.html :: navbar"></div>
+
+<div class="container mt-5">
+<!--        форма редактирования профиля пользователя-->
+<h3 th:text="#{edit.details}"></h3><br/>
+
+<form th:action="@{/user/profile}" method="post">
+    <div class="form-group row">
+        <label class="col-sm-2 col-form-label" th:text="#{new.password}"></label>
+        <div class="col-sm-6">
+            <input type="password" th:name="password" class="form-control" placeholder="Password"/>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-sm-2 col-form-label" th:text="#{new.email}"></label>
+        <div class="col-sm-6">
+            <input type="email" th:name="email" class="form-control" th:value="${email}"/>
+        </div>
+    </div>
+    <button type="submit" class="btn btn-success" th:text="#{save}"></button>
+</form>
+</div>
+
+<div th:insert="parts/common.html :: footer"></div>
+</body>
+</html>

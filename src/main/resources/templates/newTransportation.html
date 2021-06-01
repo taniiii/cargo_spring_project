@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+  <title th:text="#{company.new.order}"></title>
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous"/>
+
+</head>
+<body>
+
+<div th:insert="parts/common.html :: navbar"></div>
+
+
+<div class="container mt-5">
+
+  <h2 th:text="#{company.new.order}"></h2>
+
+  <form th:action="@{/saveTransportation}" method="post" th:object="${newTransportation}">
+    <div class="form-group row"> <!-- из раздела Layout - Horizontal form -->
+      <label class="col-sm-2 col-form-label" th:text="#{choose.destination}"></label>
+<!--      <tr th:each="address : ${addresses}">-->
+<!--        <div>-->
+<!--          <label><input type="radio" th:name="${address}" th:text="${address.name()}"/></label>-->
+<!--        </div>-->
+<!--      </tr>-->
+      <select th:name="address">
+        <option th:each="address : ${addresses}" th:value="${address}" th:text="${address}">
+        </option>
+      </select>
+    </div>
+
+    <div class="form-group row"> <!-- из раздела Layout - Horizontal form -->
+      <label class="col-sm-2 col-form-label" th:text="#{choose.size}"></label>
+<!--      <tr th:each="size : ${sizes}">-->
+<!--        <div>-->
+<!--          <label><input type="radio" th:name="${size}" th:text="${size.getSize()}"/></label>-->
+<!--        </div>-->
+<!--      </tr>-->
+      <select th:name="size">
+        <option th:each="size : ${sizes}" th:value="${size}" th:text="${size.getSize()}">
+        </option>
+      </select>
+    </div>
+    <div class="form-group row"> <!-- из раздела Layout - Horizontal form -->
+      <label class="col-sm-2 col-form-label" th:text="#{choose.weight}"></label>
+<!--      <tr th:each="weight : ${weights}">-->
+<!--        <div>-->
+<!--          <label><input type="radio" th:name="${weight}" th:text="${weight.getWeight()}"/></label>-->
+<!--        </div>-->
+<!--      </tr>-->
+      <select th:name="weight">
+        <option th:each="weight : ${weights}" th:value="${weight}" th:text="${weight.getWeight()}">
+        </option>
+      </select>
+    </div>
+    <div class="form-group">
+      <input type="text" class="form-control" placeholder="Leave any essential information about your order please" th:field="*{comment}"/>
+    </div>
+
+    <button type="submit" class="btn btn-success" th:text="#{save.new.order}"></button>
+  </form>
+</div>
+
+
+<div th:insert="parts/common.html :: footer"></div>
+</body>
+</html>

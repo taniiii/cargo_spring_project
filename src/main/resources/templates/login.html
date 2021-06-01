@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8"/>
+    <title th:text="#{company.login}"></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous"/>
+
+</head>
+<body th:style="'background: url(/static/images/avia2.jpg) no-repeat center center fixed;'">
+<div th:insert="parts/common.html :: navbar"></div>
+
+<div class="container mt-5">
+<!--Login page-->
+    <div th:if="${param.error}">
+        <div class="alert alert-danger">
+        Invalid username or password..
+        </div>
+    </div>
+
+    <div th:if="${param.logout}">
+        <div class="alert alert-info">
+        You have been logged out.
+        </div>
+    </div>
+
+    <form th:action="@{/login}" method="post">
+        <div class="form-group row"> <!-- из раздела Layout - Horizontal form -->
+            <label class="col-sm-2 col-form-label"> User name :</label><!-- размеры поля лейбла -->
+                <div class="col-sm-6"> <!-- размеры поля ввода -->
+                    <input type="text" name="username" class="form-control" placeholder="User name"/>
+                </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label"> Password :</label>
+                <div class="col-sm-6">
+                    <input type="password" name="password" class="form-control" placeholder="Password"/>
+                </div>
+        </div>
+<!--        <div><input type="submit" value="Sign In"/></div><br>-->
+        <button type="submit" class="btn btn-secondary">Sign In</button><br>
+    </form><br>
+Not registered yet? <p>Click <a th:href="@{/registration}">here</a> to proceed.</p>
+
+</div>
+
+<div th:insert="parts/common.html :: footer"></div>
+</body>
+</html>

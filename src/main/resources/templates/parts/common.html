@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8"/>
+    <title>fragments thymeleaf</title>
+</head>
+<body>
+
+<div th:fragment="navbar"> <!--  навбар из раздела components-navbar-->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="/" th:text="#{company.title}"></a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>  <!-- описание кнопки меню navbar-->
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent"> <!--описание меню navbar-->
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item"><!-- переделать на тарифы-->
+                        <a class="nav-link" href="/tariffs" th:text="#{company.tariffs}"></a>
+                    </li>
+                    <div sec:authorize="hasAuthority('USER')">
+                        <li class="nav-item">
+                    <a class="nav-link" href="/showNewTransportationForm" th:text="#{company.new.order}"></a>
+                        </li>
+                    </div>
+<!--                    <div sec:authorize="isAuthenticated()">-->
+                    <li class="nav-item" sec:authorize ="hasAuthority('ADMIN')">
+                        <a class="nav-link" href="/orders" th:text="#{company.order.list}"></a>
+                    </li>
+<!--                    </div>-->
+                    <div sec:authorize="hasAuthority('USER')">
+                        <li class="nav-item">
+<!--                            <span sec:authentication="principal.id">id</span>-->
+<!--                            <sec:authentication property="principal.id" />    заменить id на user         -->
+                            <a class="nav-link" th:href="@{/user-transp/{name}(name=${#authentication.getName()})}" th:text="#{company.user.transportations}"></a>
+                        </li>
+                    </div>
+                    <div sec:authorize="isAuthenticated()">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/user/profile" th:text="#{company.user.profile}"></a>
+                    </li>
+                    </div>
+                    <li class="nav-item" sec:authorize ="hasAuthority('ADMIN')">
+                        <a class="nav-link" href="/user" th:text="#{company.userlist}"></a>
+                    </li>
+                </ul>
+                <div class="navbar-text mr-3"><a th:href="@{'?locale=ua'}">Укр</a> <a th:href="@{'?locale=en'}">Eng</a></div>
+                <div sec:authorize="isAnonymous()" class="navbar-text mr-3">Guest</div>
+                <div sec:authorize="isAuthenticated()" class="navbar-text mr-3" th:text="${#authentication.name}"></div>
+                <div sec:authorize="isAuthenticated()">
+                <form th:action="@{/logout}" method="post">
+                    <button type="submit" class="btn btn-light" th:text="#{company.sign.out}"></button>
+                </form>
+                </div>
+                <div sec:authorize="isAnonymous()">
+                    <a class="btn btn-primary" href="/login" role="button" th:text="#{company.log.in}"></a>
+                </div>
+            </div>
+    </nav>
+</div>
+
+<!--<div th:fragment="security">-->
+<!--    <div th:with="known=${session.SPRING_SECURITY_CONTEXT??}">-->
+<!--    <th:if known?-->
+<!--</div>-->
+
+<footer th:fragment="footer">
+  <!-- Separate Popper and Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js" integrity="sha384-+YQ4JLhjyBLPDQt//I+STsc9iw4uQqACwlvpslubQzn4u2UU2UFM80nGisd026JF" crossorigin="anonymous"></script>
+</footer>
+</body>
+</html>

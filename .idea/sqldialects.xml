@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="SqlDialectMappings">
+    <file url="file://$PROJECT_DIR$/src/main/resources/sql_templates/complete_table_tariff.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/src/test/resources/create-user-after.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/src/test/resources/create-user-before.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/src/test/resources/table_tariff_after.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/src/test/resources/table_tariff_before.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/src/test/resources/transportations-list-after.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/src/test/resources/transportations-list-before.sql" dialect="GenericSQL" />
+  </component>
+</project>

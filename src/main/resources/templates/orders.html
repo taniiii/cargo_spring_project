@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+    <title th:text="#{company.order.list}"></title>
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous"/>
+
+</head>
+<body>
+
+<div th:insert="parts/common.html :: navbar"></div>
+
+<!--ссылка на редактирование списка клиентов-->
+<!--<div sec:authorize ="hasAuthority('ADMIN')"><span><a th:href="@{/user}">User list</a></span></div>-->
+
+<!--<div class="container">-->
+<!--    <h2>Add new transportation order</h2>-->
+<!--  <form action="#" th:action="@{/saveNewOrder}" th:object="${transportation}" method="POST">-->
+<!--    <input type="text" th:field="*{comment}" placeholder="Comment your order if needed" class="form-control mb-4 col-4">-->
+<!--    <button type="submit" class="btn btn-info col-2">Place new order</button>-->
+<!--  </form>-->
+<!--</div>-->
+
+<!--форма фильтра заказа -->
+<!--<div class="container mt-5">-->
+<!--    <form method="get" action="orders">-->
+<!--      <input type="text" name="filter" th:value="${filter}" placeholder="Search by comment"/>-->
+<!--      <button type="submit" class="btn btn-secondary col-1" th:text="#{search}"></button>-->
+<!--    </form>-->
+<!--</div>-->
+
+<div class="row mx-md-n5">
+  <div class="col px-md-5 mt-3 ml-5">
+  <form method="get" action="orders">
+    <input type="text" name="destinationFilter" th:value="${destinationFilter}" placeholder="Search by destination"/>
+      <small id="searchHelp" class="form-text text-muted" th:text="#{search.destination.help}"></small>
+    <button type="submit" class="btn btn-secondary col-3" th:text="#{search.destination}"></button>
+  </form>
+  </div>
+
+    <div class="col px-md-5 mt-3">
+    <form method="get" action="orders">
+        <input type="text" name="date" th:value="${date}" placeholder="yyyy-mm-dd"/>
+        <small id="searchDateHelp" class="form-text text-muted" th:text="#{search.date.help}"></small>
+        <button type="submit" class="btn btn-secondary col-3" th:text="#{search.date}"></button>
+    </form>
+    </div>
+</div>
+
+<!--<div class="container mt-5">-->
+<!--<a class="btn btn-primary" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">-->
+<!--  Add new transportation order-->
+<!--</a>-->
+<!--&lt;!&ndash;<div class="container mt-5">&ndash;&gt;-->
+<!--<div class="collapse" id="collapseExample">-->
+<!--  <div class="form-group mt-3">-->
+<!--    <form action="#" th:action="@{orders}" method="POST">-->
+<!--      <div class="form-group">-->
+<!--        <input type="text" name="comment" class="form-control" placeholder="Comment your order if needed"/>-->
+<!--      </div>-->
+<!--      <div class="form-group">-->
+<!--        <button type="submit" class="btn btn-info col-2">Place new order</button>-->
+<!--      </div>-->
+<!--    </form>-->
+<!--  </div>-->
+<!--</div>-->
+<!--</div>-->
+
+  <div class="container my-2" id="transportations-list">
+    <h1 th:text="#{orders.list}"></h1>
+  <table class="table table-hover table-striped table-responsive-md">
+    <thead>
+      <tr>
+        <th scope="col">
+          <a th:href="@{'/orders' + '?sortBy=id&sortDir=' + ${reverseSortDir} + '&pageNo=' + ${currentPage}}" th:text="#{order.id}"></a></th>
+        <th th:text="#{order.address}"></th>
+        <th scope="col">
+          <a th:href="@{'/orders' + '?sortBy=creationDate&sortDir=' + ${reverseSortDir} + '&pageNo=' + ${currentPage}}" th:text="#{order.creation}"></a></th>
+        <th th:text="#{order.price}"></th>
+        <th th:text="#{order.comment}"></th>
+        <th th:text="#{order.customer}"></th>
+        <th th:text="#{order.status}"></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr th:each="transportation : ${listOfOrders}">
+        <td th:text="${transportation.id}"></td>
+        <td th:text="${transportation.tariff.address}"></td>
+        <td th:text="${transportation.creationDate}"></td>
+        <td th:text="${transportation.tariff.price} + ' ' + #{uah}"></td>
+        <td th:text="${transportation.comment}"></td>
+        <td th:text="${transportation.customer.username}"></td>
+        <td th:text="${transportation.transportationStatus}"></td>
+        <td><a th:href="@{/transportationConfirm/{id}(id=${transportation.id})}" class="btn btn-warning" th:text="#{status.edit}"></a></td> <!--заменить-->
+      </tr>
+    </tbody>
+  </table>
+
+    <div th:if="${totalPages > 1}">
+      <div class="row col-sm-20">
+        <div class="col-sm-2" th:text="#{total.rows}">
+<!--          Total Rows: [[${totalItems}]]-->
+          [[${totalItems}]]
+        </div>
+        <div class="col-sm-2">
+            <span th:each="i: ${#numbers.sequence(1, totalPages)}">
+      <a th:if="${currentPage != i}" th:href="@{'/orders' + '?sortBy=' + ${sortBy} + '&sortDir='
+            + ${sortDir} + '&pageNo=' + ${i}}">[[${i}]]</a>
+      <span th:unless="${currentPage != i}">[[${i}]]</span> &nbsp; &nbsp;
+            </span>
+        </div>
+        <div class="col-sm-1">
+          <a th:if="${currentPage < totalPages}" th:href="@{'/orders' + '?sortBy='
+                    + ${sortBy} + '&sortDir=' + ${sortDir} + '&pageNo=' + ${currentPage +1}}" th:text="#{next}"></a>
+          <span th:unless="${currentPage < totalPages}" th:text="#{next}"></span>
+        </div>
+
+        <div class="col-sm-1">
+          <a th:if="${currentPage < totalPages}" th:href="@{'/orders' + '?sortBy='
+                    + ${sortBy} + '&sortDir=' + ${sortDir}+ '&pageNo=' + ${totalPages}}" th:text="#{last}"></a>
+          <span th:unless="${currentPage < totalPages}" th:text="last"></span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+<div th:insert="parts/common.html :: footer"></div>
+</body>
+</html>
