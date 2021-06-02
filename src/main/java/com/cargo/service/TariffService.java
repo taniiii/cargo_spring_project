@@ -18,11 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
 
-import static com.cargo.service.ServiceUtils.getParameters;
 
 @Service
 public class TariffService {
@@ -44,32 +40,6 @@ public class TariffService {
         Pageable pageable = PageRequest.of(pageNo -1, pageSize, sort);
         return tariffRepo.findAll(pageable);
     }
-
-//    public Tariff findTariff(Map<String, String> tariffParam){
-////        Set<String> addresses = Arrays.stream(Address.values())
-////                .map(Address::name)
-////                .collect(Collectors.toSet());
-//        Set<String> addresses = getParameters(Address.values());
-//        Set<String> sizes = getParameters(Size.values());
-//        Set<String> weights = getParameters(Weight.values());
-//
-//        String address="", size="", weight="";
-//        for(String key : tariffParam.keySet()){
-//            if(addresses.contains(key)){
-//                address = key;
-//            }
-//            if(sizes.contains(key)){
-//                size = key;
-//            }
-//            if(weights.contains(key)){
-//                weight = key;
-//            }
-//        }
-//
-//        Tariff tariff = tariffRepo.findTariffByAddressEqualsAndSizeEqualsAndWeightEquals(Address.valueOf(address), Size.valueOf(size), Weight.valueOf(weight));
-//
-//        return tariff;
-//    }
 
     public Tariff findTariff(String address, String size, String weight){
 

@@ -14,7 +14,7 @@
 
 <div class="container mt-5" sec:authorize="hasAuthority('ADMIN')">
   <form th:action="@{/transportationConfirm/{id}(id=${transportation.id})}" method="POST">
-    <h4>${}</h4>
+    <h4 th:text="#{change.status}"></h4>
     <select th:name="status">
         <option th:each="status : ${statusAvailable}" th:value="${status}" th:text="${status}">
         </option>

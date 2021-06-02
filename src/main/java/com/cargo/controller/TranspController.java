@@ -1,7 +1,6 @@
 package com.cargo.controller;
 
-import com.cargo.model.transportation.Tariff;
-import com.cargo.model.transportation.Transportation;
+import com.cargo.model.transportation.*;
 import com.cargo.model.user.User;
 import com.cargo.service.TariffService;
 import com.cargo.service.TransportationService;
@@ -14,16 +13,12 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Map;
 
 @Controller
 public class TranspController {
 
     @Autowired
     private TransportationService transportationService;
-    @Autowired
-    private TariffService tariffService;
 
     @GetMapping("/user-transp/{name}")
     public String getUserTransportations(
@@ -62,9 +57,8 @@ public class TranspController {
 
 
     @PostMapping("/saveTransportation")
-    @Transactional
     public String saveNewTransportation(
-//            @RequestParam Map<String, String> tariffParam,
+
             @RequestParam String address,
             @RequestParam String size,
             @RequestParam String weight,
@@ -72,10 +66,7 @@ public class TranspController {
             @AuthenticationPrincipal User user
     ){
         transportation.setCustomer(user);
-        //transportation.setTariff(tariffService.findTariff(tariffParam));
-        transportation.setTariff(tariffService.findTariff(address, size, weight));
-        transportation.setDeliveryDate(transportation.getCreationDate().plusDays(tariffService.findDeliveryTerm(address)));
-        transportationService.saveTransportation(transportation);
+        transportationService.saveTransportation(transportation, address, size, weight);
 
         return "redirect:/user-transp/" + user.getUsername();
     }

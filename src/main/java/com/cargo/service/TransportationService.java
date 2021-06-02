@@ -1,8 +1,7 @@
 package com.cargo.service;
 
-import com.cargo.model.transportation.Address;
-import com.cargo.model.transportation.Transportation;
-import com.cargo.model.transportation.TransportationStatus;
+import com.cargo.model.transportation.*;
+import com.cargo.repos.TariffRepo;
 import com.cargo.repos.TransportationRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -10,6 +9,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -24,6 +25,8 @@ public class TransportationService {
 
     @Autowired
     TransportationRepo transportationRepo;
+    @Autowired
+    TariffRepo tariffRepo;
 
 //    public List<Transportation> findTransportation(String filter) {
 //        if(filter != null && !filter.isEmpty()){
@@ -69,8 +72,12 @@ public class TransportationService {
 
     }
 
-    public void saveTransportation(Transportation tr) {
-
+    @Transactional(isolation = Isolation.READ_COMMITTED)
+    public void saveTransportation(Transportation tr, String address, String size, String weight) {
+        tr.setTariff(tariffRepo.findTariffByAddressEqualsAndSizeEqualsAndWeightEquals(
+                Address.valueOf(address), Size.valueOf(size), Weight.valueOf(weight)));
+        tr.setDeliveryDate(tr.getCreationDate().plusDays(tariffRepo.
+                findFirstByAddressEquals(Address.valueOf(address)).getDeliveryTermDays()));
         tr.setTransportationStatus(TransportationStatus.NEW);
         transportationRepo.save(tr);
     }
@@ -80,41 +87,40 @@ public class TransportationService {
         return transportationRepo.findAll();
     }
 
-//    public List<Transportation> getUserTransportations(String userName){
-//        return transportationRepo.findTransportationByCustomerName(userName);
-//    }
+
     public List<Transportation> getUserTransportations(Long id){
         return transportationRepo.findTransportationByCustomerId(id);
     }
 
     public Transportation findById(Long id){
         return transportationRepo.findById(id)
-                .orElseThrow(() -> new RuntimeException("Transportation not found for id :: " + id));
+                .orElseThrow(() -> new RuntimeException("Transportation not found for id :: " + id)); //TODO
     }
 
-    public void transportationUpdate(Transportation tr, Map<String, String> transpStatus){ //String commen
-//        tr.setComment(comment);
-
-//        Set<String> roles = Arrays.stream(Role.values()) //смотрим какие роли есть вообще
-//                .map(Role::name)
-//                .collect(Collectors.toSet());
+//    public void transportationUpdate(Transportation tr, Map<String, String> transpStatus){ //String commen
+////        tr.setComment(comment);
 //
-//        user.getRoles().clear(); //очищаем все раннее присутствовавшие роли пользователя
-//
-//        for(String key : form.keySet()){ //проверяем, что форма содержит роли для пользователя
-//            if(roles.contains(key)){     //кроме ролей в списке есть токены и ИД, кот. не нужны
-//                user.getRoles().add(Role.valueOf(key));
+////        Set<String> roles = Arrays.stream(Role.values()) //смотрим какие роли есть вообще
+////                .map(Role::name)
+////                .collect(Collectors.toSet());
+////
+////        user.getRoles().clear(); //очищаем все раннее присутствовавшие роли пользователя
+////
+////        for(String key : form.keySet()){ //проверяем, что форма содержит роли для пользователя
+////            if(roles.contains(key)){     //кроме ролей в списке есть токены и ИД, кот. не нужны
+////                user.getRoles().add(Role.valueOf(key));
+////            }
+////        }
+//        Set<String> allStatuses = getParameters(TransportationStatus.values());
+//        for (String key : transpStatus.keySet()){
+//            if(allStatuses.contains(key)){
+//                tr.setTransportationStatus(TransportationStatus.valueOf(key));
 //            }
 //        }
-        Set<String> allStatuses = getParameters(TransportationStatus.values());
-        for (String key : transpStatus.keySet()){
-            if(allStatuses.contains(key)){
-                tr.setTransportationStatus(TransportationStatus.valueOf(key));
-            }
-        }
-        transportationRepo.save(tr);
-    }
-    public void transportationUpdate1(Transportation tr, String status){
+//        transportationRepo.save(tr);
+//    }
+
+    public void transportationUpdate(Transportation tr, String status){
         tr.setTransportationStatus(TransportationStatus.valueOf(status));
         transportationRepo.save(tr);
     }
