@@ -1,5 +1,6 @@
 package com.cargo.service;
 
+import com.cargo.exception.CargoTranspNotFoundException;
 import com.cargo.model.transportation.*;
 import com.cargo.repos.TariffRepo;
 import com.cargo.repos.TransportationRepo;
@@ -11,14 +12,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.time.LocalDate;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import static com.cargo.service.ServiceUtils.getParameters;
+import java.util.Optional;
 
 @Service
 public class TransportationService {
@@ -28,64 +24,51 @@ public class TransportationService {
     @Autowired
     TariffRepo tariffRepo;
 
-//    public List<Transportation> findTransportation(String filter) {
-//        if(filter != null && !filter.isEmpty()){
-//            return transportationRepo.findTransportationByCommentContaining(filter);
-//        } else {
-//            return transportationRepo.findAll();
-//        }
-//    }
-    public Page<Transportation> findTransportation(int pageNo, int pageSize, String sortBy, String sortDir, String filter) {
+    public Page<Transportation> findTransportation(int pageNo, int pageSize, String sortBy, String sortDir) {
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() :
                 Sort.by(sortBy).descending();
-        Pageable pageable = PageRequest.of(pageNo, pageSize, sort); //-1
-        if(filter != null && !filter.isEmpty()){
-            return transportationRepo.findTransportationByCommentContaining(filter, pageable);
-        } else {
+        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
             return transportationRepo.findAll(pageable);
-        }
     }
 
     public Page<Transportation> findTransportationDest(int pageNo, int pageSize, String sortBy, String sortDir, String destination) {
-        Set<String> addresses = getParameters(Address.values()); //TODO убрать повторяющийся код
+
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() :
                 Sort.by(sortBy).descending();
         Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
-        for(String e : addresses){
-            if(e.contains(destination.toUpperCase())){
-                return transportationRepo.findTransportationByTariffAddress(Address.valueOf(e), pageable);
-            }
-        }
 
-        return Page.empty();
+        Optional<Page<Transportation>> page = Optional.ofNullable(transportationRepo.findTransportationByTariffAddress(Address.valueOf(destination), pageable));
+
+        return page.orElse(Page.empty());
+
     }
 
-    public Page<Transportation> findTransportationByDate(int pageNo, int pageSize, String sortBy, String sortDir, String filter){
+    public Page<Transportation> findTransportationByDate(int pageNo, int pageSize, String sortBy, String sortDir, LocalDate date){
 
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() :
                 Sort.by(sortBy).descending();
         Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
-        if(filter.matches("\\d{4}-\\d{2}-\\d{2}")){
-            return transportationRepo.findTransportationByCreationDate(LocalDate.parse(filter), pageable);
-        } else
-            return Page.empty();
 
+        Optional<Page<Transportation>> page = Optional.ofNullable(transportationRepo.findTransportationByCreationDate(date, pageable));
+        return page.orElse(Page.empty());
     }
 
     @Transactional(isolation = Isolation.READ_COMMITTED)
     public void saveTransportation(Transportation tr, String address, String size, String weight) {
+
         tr.setTariff(tariffRepo.findTariffByAddressEqualsAndSizeEqualsAndWeightEquals(
                 Address.valueOf(address), Size.valueOf(size), Weight.valueOf(weight)));
         tr.setDeliveryDate(tr.getCreationDate().plusDays(tariffRepo.
                 findFirstByAddressEquals(Address.valueOf(address)).getDeliveryTermDays()));
         tr.setTransportationStatus(TransportationStatus.NEW);
+
         transportationRepo.save(tr);
     }
 
 
-    public Iterable<Transportation> findAll() {
-        return transportationRepo.findAll();
-    }
+//    public Iterable<Transportation> findAll() {
+//        return transportationRepo.findAll();
+//    }
 
 
     public List<Transportation> getUserTransportations(Long id){
@@ -94,31 +77,9 @@ public class TransportationService {
 
     public Transportation findById(Long id){
         return transportationRepo.findById(id)
-                .orElseThrow(() -> new RuntimeException("Transportation not found for id :: " + id)); //TODO
+                .orElseThrow(() -> new CargoTranspNotFoundException(id.toString())); //TODO
     }
 
-//    public void transportationUpdate(Transportation tr, Map<String, String> transpStatus){ //String commen
-////        tr.setComment(comment);
-//
-////        Set<String> roles = Arrays.stream(Role.values()) //смотрим какие роли есть вообще
-////                .map(Role::name)
-////                .collect(Collectors.toSet());
-////
-////        user.getRoles().clear(); //очищаем все раннее присутствовавшие роли пользователя
-////
-////        for(String key : form.keySet()){ //проверяем, что форма содержит роли для пользователя
-////            if(roles.contains(key)){     //кроме ролей в списке есть токены и ИД, кот. не нужны
-////                user.getRoles().add(Role.valueOf(key));
-////            }
-////        }
-//        Set<String> allStatuses = getParameters(TransportationStatus.values());
-//        for (String key : transpStatus.keySet()){
-//            if(allStatuses.contains(key)){
-//                tr.setTransportationStatus(TransportationStatus.valueOf(key));
-//            }
-//        }
-//        transportationRepo.save(tr);
-//    }
 
     public void transportationUpdate(Transportation tr, String status){
         tr.setTransportationStatus(TransportationStatus.valueOf(status));

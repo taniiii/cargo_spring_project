@@ -16,7 +16,6 @@ public class Transportation{
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    //@NotBlank(message = "Please fill in your comment")//добавить зависимость spring-boot-starter-validation
     @Length(max=2048, message = "Message is too long (size more 2kB)")
     private String comment;
 
@@ -27,11 +26,10 @@ public class Transportation{
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "tariff_id")
     private Tariff tariff;
+
     @Enumerated(EnumType.STRING)
-//    @CollectionTable(name = "transportation_status", joinColumns = @JoinColumn(name = "transportation_id"))
     private TransportationStatus status;
 
-//    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_at", updatable = false)
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @CreatedDate
@@ -43,7 +41,6 @@ public class Transportation{
 
     public Transportation() {
         this.creationDate = LocalDate.now();
-//        this.deliveryDate = creationDate.plusDays(4);
     }
 
     public Long getId() {

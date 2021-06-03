@@ -13,14 +13,15 @@
 <div th:insert="parts/common.html :: navbar"></div>
 
 <div class="container mt-5">
-<!--        форма редактирования профиля пользователя-->
+
 <h3 th:text="#{edit.details}"></h3><br/>
 
 <form th:action="@{/user/profile}" method="post">
     <div class="form-group row">
         <label class="col-sm-2 col-form-label" th:text="#{new.password}"></label>
         <div class="col-sm-6">
-            <input type="password" th:name="password" class="form-control" placeholder="Password"/>
+            <input type="password" th:name="password" class="form-control" placeholder="New password or confirm old one here"/>
+            <small id="passwordHelp" class="form-text text-muted" th:text="#{registration.help}"></small>
         </div>
     </div>
     <div class="form-group row">

@@ -19,7 +19,6 @@
         <option th:each="status : ${statusAvailable}" th:value="${status}" th:text="${status}">
         </option>
     </select>
-<!--    <input type="hidden" name="transportationId" th:value="${transportation.id}"/>-->
 
     <button type="submit" class="btn btn-success" th:text="#{save}"></button>
   </form>

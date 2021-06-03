@@ -1,5 +1,6 @@
 package com.cargo.controller;
 
+import com.cargo.model.transportation.Address;
 import com.cargo.model.transportation.Transportation;
 import com.cargo.model.transportation.TransportationStatus;
 import com.cargo.service.TransportationService;
@@ -14,8 +15,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import java.util.List;
-import java.util.Objects;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @PreAuthorize("hasAuthority('ADMIN')")
 @Controller
@@ -26,11 +30,10 @@ public class AdminController {
     TransportationService transportationService;
 
 
-    @GetMapping("orders")       //false-не всегда будет этот параметр фильтр
+    @GetMapping("orders")
     public String showAllTransportations(
-            @RequestParam(required = false) String filter,
-            @RequestParam(required = false) String destinationFilter,
-            @RequestParam(required = false) String date,
+            @RequestParam(defaultValue = "") String destinationFilter,
+            @RequestParam(defaultValue = "") String date,
             Model model,
             @RequestParam(defaultValue = "0") Integer pageNo,
             @RequestParam(defaultValue = "10") Integer pageSize,
@@ -39,12 +42,13 @@ public class AdminController {
 
         LOGG.debug("Inside showAllTransportations().findTransportation() method");
 
-        Page<Transportation> page = transportationService.findTransportation(pageNo, pageSize, sortBy, sortDir, filter);
+        Page<Transportation> page = transportationService.findTransportation(pageNo, pageSize, sortBy, sortDir);
 
-        if(Objects.nonNull(destinationFilter) && !destinationFilter.isEmpty()) {
+        if(!destinationFilter.isEmpty()){
             page = transportationService.findTransportationDest(pageNo, pageSize, sortBy, sortDir, destinationFilter);
-        } else if(Objects.nonNull(date) && !date.isEmpty()){
-            page = transportationService.findTransportationByDate(pageNo, pageSize, sortBy, sortDir, date);
+        }
+         if(!date.isEmpty()){
+            page = transportationService.findTransportationByDate(pageNo, pageSize, sortBy, sortDir, LocalDate.parse(date));
         }
 
         List<Transportation> listOfOrders = page.getContent();
@@ -56,8 +60,8 @@ public class AdminController {
         model.addAttribute("reverseSortDir", sortDir.equals("asc") ? "desc" : "asc");
 
         model.addAttribute("sortBy", sortBy);
+        model.addAttribute("addresses", Address.values());
         model.addAttribute("listOfOrders", listOfOrders);
-        model.addAttribute("filter", filter);
         model.addAttribute("destinationFilter", destinationFilter);
         model.addAttribute("date", date);
 
@@ -81,7 +85,6 @@ public class AdminController {
             @PathVariable(value="id") Transportation tr,
             @RequestParam String status
     ){
-
         transportationService.transportationUpdate(tr, status);
         return "redirect:/orders";
     }

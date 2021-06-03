@@ -7,20 +7,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
 
     <link rel="stylesheet" href="/static/style.css"/>
-    <!--  <link href="css/style.css" rel="stylesheet">-->
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous"/>
 
 </head>
-<!--  задний фон-->
-<!--<body th:style="'background: url(/static/images/auto.jpg) no-repeat center center fixed;'">-->
+
 <body th:style="'background: url(/static/images/ship5.jpg) no-repeat center center fixed;'">
 <div th:insert="parts/common.html :: navbar"></div>
 
-<!--<img src="../static/images/auto.jpg" width="1000" th:src="@{images/auto.jpg}" alt=""/>-->
 
-<div class="container mt-5"> <!--  отступы для заголовка из раздела utilities-spacing-->
-    <!--  container из раздела layout-grid-->
+
+<div class="container mt-5">
+
 <div class="container my-2">
     <h1 th:text="#{tariffs}"></h1>
     <table class="table table-bordered table-dark">
@@ -37,7 +35,6 @@
         <tbody>
         <tr th:each="tariff : ${tariffList}">
             <td th:text="${tariff.getAddress().toString()}"></td>
-<!--            <td th:text="${#lists.toList(user.getRoles())}"></td>-->
             <td th:text="${tariff.getSize().getSize()}"></td>
             <td th:text="${tariff.getWeight().getWeight()}"></td>
             <td th:text="${tariff.getPrice()}"></td>

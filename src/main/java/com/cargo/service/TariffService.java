@@ -41,15 +41,15 @@ public class TariffService {
         return tariffRepo.findAll(pageable);
     }
 
-    public Tariff findTariff(String address, String size, String weight){
-
-        return tariffRepo.findTariffByAddressEqualsAndSizeEqualsAndWeightEquals(
-                Address.valueOf(address), Size.valueOf(size), Weight.valueOf(weight));
-
-    }
-
-    public Long findDeliveryTerm(String address){
-        Tariff t = tariffRepo.findFirstByAddressEquals(Address.valueOf(address));
-        return t.getDeliveryTermDays();
-    }
+//    public Tariff findTariff(String address, String size, String weight){
+//
+//        return tariffRepo.findTariffByAddressEqualsAndSizeEqualsAndWeightEquals(
+//                Address.valueOf(address), Size.valueOf(size), Weight.valueOf(weight));
+//
+//    }
+//
+//    public Long findDeliveryTerm(String address){
+//        Tariff t = tariffRepo.findFirstByAddressEquals(Address.valueOf(address));
+//        return t.getDeliveryTermDays();
+//    }
 }

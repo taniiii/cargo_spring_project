@@ -16,7 +16,7 @@
 
             <div class="collapse navbar-collapse" id="navbarSupportedContent"> <!--описание меню navbar-->
                 <ul class="navbar-nav mr-auto">
-                    <li class="nav-item"><!-- переделать на тарифы-->
+                    <li class="nav-item">
                         <a class="nav-link" href="/tariffs" th:text="#{company.tariffs}"></a>
                     </li>
                     <div sec:authorize="hasAuthority('USER')">
@@ -24,15 +24,14 @@
                     <a class="nav-link" href="/showNewTransportationForm" th:text="#{company.new.order}"></a>
                         </li>
                     </div>
-<!--                    <div sec:authorize="isAuthenticated()">-->
+
                     <li class="nav-item" sec:authorize ="hasAuthority('ADMIN')">
                         <a class="nav-link" href="/orders" th:text="#{company.order.list}"></a>
                     </li>
-<!--                    </div>-->
+
                     <div sec:authorize="hasAuthority('USER')">
                         <li class="nav-item">
-<!--                            <span sec:authentication="principal.id">id</span>-->
-<!--                            <sec:authentication property="principal.id" />    заменить id на user         -->
+
                             <a class="nav-link" th:href="@{/user-transp/{name}(name=${#authentication.getName()})}" th:text="#{company.user.transportations}"></a>
                         </li>
                     </div>
@@ -59,11 +58,6 @@
             </div>
     </nav>
 </div>
-
-<!--<div th:fragment="security">-->
-<!--    <div th:with="known=${session.SPRING_SECURITY_CONTEXT??}">-->
-<!--    <th:if known?-->
-<!--</div>-->
 
 <footer th:fragment="footer">
   <!-- Separate Popper and Bootstrap JS -->

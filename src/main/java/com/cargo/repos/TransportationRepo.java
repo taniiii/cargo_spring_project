@@ -8,10 +8,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 
 public interface TransportationRepo extends JpaRepository<Transportation, Long> {
-//    List<Transportation> findTransportationByCommentContaining(String filter);
 
     Page<Transportation> findTransportationByCommentContaining(String filter, Pageable pageable);
 
@@ -19,9 +19,6 @@ public interface TransportationRepo extends JpaRepository<Transportation, Long> 
 
     Page<Transportation> findTransportationByCreationDate(LocalDate filter, Pageable pageable);
 
-    //    List<Transportation> findTransportationByCustomerName(String userName);
     List<Transportation> findTransportationByCustomerId(Long id);
-    //пэйджинация
-
 
 }

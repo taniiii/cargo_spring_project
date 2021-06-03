@@ -11,7 +11,15 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.util.Map;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 
 @Controller
@@ -58,16 +66,30 @@ public class TranspController {
 
     @PostMapping("/saveTransportation")
     public String saveNewTransportation(
-
             @RequestParam String address,
             @RequestParam String size,
             @RequestParam String weight,
-            @ModelAttribute("newTransportation") Transportation transportation,
+            @Valid @ModelAttribute("newTransportation") Transportation transportation, // @Valid лишнее
+            BindingResult bindingResult, //лишнее
+            Model model,  //лишнее
             @AuthenticationPrincipal User user
     ){
-        transportation.setCustomer(user);
-        transportationService.saveTransportation(transportation, address, size, weight);
-
+        if(bindingResult.hasErrors()){
+            Map<String, String> errorsMap = getErrors(bindingResult);
+            model.mergeAttributes(errorsMap);
+        } else {
+            transportation.setCustomer(user);
+            transportationService.saveTransportation(transportation, address, size, weight);
+        }
         return "redirect:/user-transp/" + user.getUsername();
     }
+
+    static Map<String, String> getErrors(BindingResult bindingResult){
+        Collector<FieldError, ?, Map<String, String>> collector = Collectors.toMap(
+                fieldError -> fieldError.getField() + "Error",
+                FieldError::getDefaultMessage);
+        Map<String, String> errorsMap = bindingResult.getFieldErrors().stream().collect(collector);
+        return errorsMap;
+    }
+
 }

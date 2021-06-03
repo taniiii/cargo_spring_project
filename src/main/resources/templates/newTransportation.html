@@ -19,26 +19,16 @@
   <h2 th:text="#{company.new.order}"></h2>
 
   <form th:action="@{/saveTransportation}" method="post" th:object="${newTransportation}">
-    <div class="form-group row"> <!-- из раздела Layout - Horizontal form -->
+    <div class="form-group row">
       <label class="col-sm-2 col-form-label" th:text="#{choose.destination}"></label>
-<!--      <tr th:each="address : ${addresses}">-->
-<!--        <div>-->
-<!--          <label><input type="radio" th:name="${address}" th:text="${address.name()}"/></label>-->
-<!--        </div>-->
-<!--      </tr>-->
       <select th:name="address">
         <option th:each="address : ${addresses}" th:value="${address}" th:text="${address}">
         </option>
       </select>
     </div>
 
-    <div class="form-group row"> <!-- из раздела Layout - Horizontal form -->
+    <div class="form-group row">
       <label class="col-sm-2 col-form-label" th:text="#{choose.size}"></label>
-<!--      <tr th:each="size : ${sizes}">-->
-<!--        <div>-->
-<!--          <label><input type="radio" th:name="${size}" th:text="${size.getSize()}"/></label>-->
-<!--        </div>-->
-<!--      </tr>-->
       <select th:name="size">
         <option th:each="size : ${sizes}" th:value="${size}" th:text="${size.getSize()}">
         </option>
@@ -46,18 +36,21 @@
     </div>
     <div class="form-group row"> <!-- из раздела Layout - Horizontal form -->
       <label class="col-sm-2 col-form-label" th:text="#{choose.weight}"></label>
-<!--      <tr th:each="weight : ${weights}">-->
-<!--        <div>-->
-<!--          <label><input type="radio" th:name="${weight}" th:text="${weight.getWeight()}"/></label>-->
-<!--        </div>-->
-<!--      </tr>-->
       <select th:name="weight">
         <option th:each="weight : ${weights}" th:value="${weight}" th:text="${weight.getWeight()}">
         </option>
       </select>
     </div>
     <div class="form-group">
-      <input type="text" class="form-control" placeholder="Leave any essential information about your order please" th:field="*{comment}"/>
+      <input type="text" class="form-control ${(param.error?)?string('is-invalid', '')}" placeholder="Leave any essential information about your order please" th:field="*{comment}"/>
+
+      <div th:if="${param.error}">
+      <div class="invalid-feedback">
+          Please provide a valid comment.
+          Comment is too long (size more 2kB)
+      </div>
+      </div>
+
     </div>
 
     <button type="submit" class="btn btn-success" th:text="#{save.new.order}"></button>

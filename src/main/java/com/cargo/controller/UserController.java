@@ -6,17 +6,27 @@ import com.cargo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import javax.validation.constraints.Pattern;
+import java.util.Arrays;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
+@Validated   //??
 @Controller
 @RequestMapping("/user")
 public class UserController {
     @Autowired
     private UserService userService;
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping
@@ -28,13 +38,7 @@ public class UserController {
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("{id}")
     public String userEditform(@PathVariable(value = "id") Long id, Model model){
-//        Optional<User> optionalUser = userRepo.findById(id);
-//        User user = null;
-//        if (optionalUser.isPresent()) {
-//            user = optionalUser.get();
-//        } else {
-//            throw new RuntimeException(" Employee not found for id :: " + id);
-//        }
+
         User user = userService.findById(id);
         model.addAttribute("user", user);
         model.addAttribute("roles", Role.values());
@@ -44,11 +48,13 @@ public class UserController {
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping
     public String userSave(
-            @RequestParam String username,
-            @RequestParam Map<String, String> form,
+            @RequestParam("newRole") String role,
             @RequestParam("userId") User user){
 
-        userService.saveUser(user, username, form);
+        user.getRoles().clear(); //очищаем все раннее присутствовавшие роли пользователя
+        user.getRoles().add(Role.valueOf(role));
+
+        userService.saveUser(user);
         return "redirect:/user";
     }
 
@@ -60,13 +66,17 @@ public class UserController {
         return "profile";
     }
 
+
     @PostMapping("/profile")
     public String updateProfile(
             @AuthenticationPrincipal User user,
-            @RequestParam("password") String password,
-            @RequestParam("email") String email) {
+            @RequestParam("password") @Pattern(regexp = "((?=.*\\d)(?=.*[A-Za-z]).{8,15})") String password,
+            @RequestParam("email") @Pattern(regexp = "(\\w+@[a-zA-Z_]+?\\.[a-zA-Z]{2,6})") String email) {
 
-        userService.updateProfile(user, password, email);
+        user.setEmail(email);
+        user.setPassword(passwordEncoder.encode(password));
+
+        userService.saveUser(user);
 
         return "redirect:/user/profile";
     }

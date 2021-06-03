@@ -1,5 +1,6 @@
 package com.cargo.service;
 
+import com.cargo.exception.CargoUserNotFoundException;
 import com.cargo.model.user.Role;
 import com.cargo.model.user.User;
 import com.cargo.repos.UserRepo;
@@ -9,17 +10,19 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 //import org.thymeleaf.util.StringUtils;
 
+import javax.validation.Valid;
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 public class UserService implements UserDetailsService {
     @Autowired
-    private UserRepo userRepo; //private final UserRepo userRepo;
-   // public UserService(UserRepo userRepo){
-   // this.userRepo = userRepo;}
+    private UserRepo userRepo;
     @Autowired
     PasswordEncoder passwordEncoder;
 
@@ -34,17 +37,18 @@ public class UserService implements UserDetailsService {
 
     public User findById(Long id) {
         return userRepo.findById(id)
-                .orElseThrow(() -> new RuntimeException(" Employee not found for id :: " + id));
+                .orElseThrow(() -> new CargoUserNotFoundException(id.toString())); //TODO
     }
 
-    public User findByName(String name){
-        return userRepo.findByUsername(name);
-    }
+//    public User findByName(String name){
+//        return userRepo.findByUsername(name);
+//    }
 
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     public boolean addUser(User user){
         User userFromDb = userRepo.findByUsername(user.getUsername());
 
-        if(userFromDb != null){
+        if(Objects.nonNull(userFromDb)){
             return false;
         }
         user.setActive(true);
@@ -55,38 +59,26 @@ public class UserService implements UserDetailsService {
         return true;
     }
 
-    public void saveUser(User user, String username, Map<String, String> form) {
-        user.setUsername(username);
-
-        Set<String> roles = Arrays.stream(Role.values()) //смотрим какие роли есть вообще
-                .map(Role::name)
-                .collect(Collectors.toSet());
-
-        user.getRoles().clear(); //очищаем все раннее присутствовавшие роли пользователя
-
-        for(String key : form.keySet()){ //проверяем, что форма содержит роли для пользователя
-            if(roles.contains(key)){     //кроме ролей в списке есть токены и ИД, кот. не нужны
-                user.getRoles().add(Role.valueOf(key));
-            }
-        }
+    public void saveUser(User user) {
         userRepo.save(user);
     }
 
-    public void updateProfile(User user, String password, String email) {
-        String userEmail = user.getEmail();
 
-        boolean isEmailChanged = (email != null && !email.equals(userEmail)) ||
-                (userEmail != null && !userEmail.equals(email));
-
-        if (isEmailChanged) {
-            user.setEmail(email);
-        }
-
-//        if (!StringUtils.isEmpty(password)) {
-        if (password != null) {
-            user.setPassword(passwordEncoder.encode(password));
-        }
-
-        userRepo.save(user);
-    }
+//    public void updateProfile(User user, String password, String email) {
+//        String userEmail = user.getEmail();
+//
+//        boolean isEmailChanged = (email != null && !email.equals(userEmail)) ||
+//                (userEmail != null && !userEmail.equals(email));
+//
+//        if (isEmailChanged) {
+//            user.setEmail(email);
+//        }
+//
+////        if (!StringUtils.isEmpty(password)) {
+//        if (password != null) {
+//            user.setPassword(passwordEncoder.encode(password));
+//        }
+//
+//        userRepo.save(user);
+//    }
 }

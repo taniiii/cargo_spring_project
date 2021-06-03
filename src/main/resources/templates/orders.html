@@ -13,61 +13,26 @@
 
 <div th:insert="parts/common.html :: navbar"></div>
 
-<!--ссылка на редактирование списка клиентов-->
-<!--<div sec:authorize ="hasAuthority('ADMIN')"><span><a th:href="@{/user}">User list</a></span></div>-->
-
-<!--<div class="container">-->
-<!--    <h2>Add new transportation order</h2>-->
-<!--  <form action="#" th:action="@{/saveNewOrder}" th:object="${transportation}" method="POST">-->
-<!--    <input type="text" th:field="*{comment}" placeholder="Comment your order if needed" class="form-control mb-4 col-4">-->
-<!--    <button type="submit" class="btn btn-info col-2">Place new order</button>-->
-<!--  </form>-->
-<!--</div>-->
-
-<!--форма фильтра заказа -->
-<!--<div class="container mt-5">-->
-<!--    <form method="get" action="orders">-->
-<!--      <input type="text" name="filter" th:value="${filter}" placeholder="Search by comment"/>-->
-<!--      <button type="submit" class="btn btn-secondary col-1" th:text="#{search}"></button>-->
-<!--    </form>-->
-<!--</div>-->
-
 <div class="row mx-md-n5">
   <div class="col px-md-5 mt-3 ml-5">
   <form method="get" action="orders">
-    <input type="text" name="destinationFilter" th:value="${destinationFilter}" placeholder="Search by destination"/>
-      <small id="searchHelp" class="form-text text-muted" th:text="#{search.destination.help}"></small>
-    <button type="submit" class="btn btn-secondary col-3" th:text="#{search.destination}"></button>
+          <label class="col-md-3 col-form-label" th:text="#{search.destination}"></label><br/>
+          <select name="destinationFilter">
+              <option th:each="address : ${addresses}" th:value="${address}" th:text="${address}">
+              </option>
+              <option value="" text="none"></option>
+          </select>
+      <button type="submit" class="btn btn-secondary col-3" th:text="#{search}"></button>
   </form>
   </div>
 
-    <div class="col px-md-5 mt-3">
+    <div  class="col px-md-5 mt-3">
     <form method="get" action="orders">
-        <input type="text" name="date" th:value="${date}" placeholder="yyyy-mm-dd"/>
-        <small id="searchDateHelp" class="form-text text-muted" th:text="#{search.date.help}"></small>
+        <input type="date" name="date" th:value="${date}"/>
         <button type="submit" class="btn btn-secondary col-3" th:text="#{search.date}"></button>
     </form>
     </div>
 </div>
-
-<!--<div class="container mt-5">-->
-<!--<a class="btn btn-primary" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">-->
-<!--  Add new transportation order-->
-<!--</a>-->
-<!--&lt;!&ndash;<div class="container mt-5">&ndash;&gt;-->
-<!--<div class="collapse" id="collapseExample">-->
-<!--  <div class="form-group mt-3">-->
-<!--    <form action="#" th:action="@{orders}" method="POST">-->
-<!--      <div class="form-group">-->
-<!--        <input type="text" name="comment" class="form-control" placeholder="Comment your order if needed"/>-->
-<!--      </div>-->
-<!--      <div class="form-group">-->
-<!--        <button type="submit" class="btn btn-info col-2">Place new order</button>-->
-<!--      </div>-->
-<!--    </form>-->
-<!--  </div>-->
-<!--</div>-->
-<!--</div>-->
 
   <div class="container my-2" id="transportations-list">
     <h1 th:text="#{orders.list}"></h1>
@@ -102,7 +67,6 @@
     <div th:if="${totalPages > 1}">
       <div class="row col-sm-20">
         <div class="col-sm-2" th:text="#{total.rows}">
-<!--          Total Rows: [[${totalItems}]]-->
           [[${totalItems}]]
         </div>
         <div class="col-sm-2">

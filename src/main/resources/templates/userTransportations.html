@@ -5,40 +5,17 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
   <title th:text="#{company.user.transportations}"></title>
-  <!-- Bootstrap CSS -->
+
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous"/>
 
 </head>
 <body>
 <div th:insert="parts/common.html :: navbar"></div>
-<!--transportation edit - copy of Add transportation (можно вынести в отдельный фрагмент)-->
-<!--ДОБАВИТЬ ПРОВЕРКУ НА ТЕКУЩЕГО ПОЛЬЗОВАТЕЛЯ-->
+
 <div class="container mt-5">
-<!--  <a class="btn btn-primary" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">-->
-<!--    Edit transportation-->
-<!--  </a>-->
-<!--  <div class="container mt-5">-->
-<!--  <div class="collapse" id="collapseExample">-->
-<!--    <div class="form-group mt-3">-->
-<!--      <form action="#" th:action="@{/user-transp/{name}(name=${#authentication.getName()})}" method="POST">-->
-<!--        <div class="form-group">-->
-<!--          <input type="text" name="comment" class="form-control" placeholder="Comment your order if needed">-->
-<!--        </div>-->
-<!--        <tr th:each="role : ${roles}">-->
-<!--          <div>-->
-<!--            <label><input type="checkbox" th:name="${role}" th:text="${role}"></label>-->
-<!--          </div>-->
-<!--        </tr>-->
-<!--        <input type="hidden" name="userId" th:value="${user.id}"/>-->
-<!--        <input type="hidden" name="transportationId" th:value="${user.id}"/>  &lt;!&ndash;если есть доставка - берем ее id&ndash;&gt;-->
-<!--        <div class="form-group">-->
-<!--          <button type="submit" class="btn btn-info col-2">Save</button>-->
-<!--        </div>-->
-<!--      </form>-->
-<!--    </div>-->
-<!--  </div>-->
+
 </div>
-<!--transportation список - copy of List of orders (можно вынести в отдельный фрагмент)-->
+
 <div class="container my-2" id="user-transportations-list">
   <h1 th:text="#{orders.list}"></h1>
 
