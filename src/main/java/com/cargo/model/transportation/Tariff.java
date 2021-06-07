@@ -1,6 +1,7 @@
 package com.cargo.model.transportation;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 @Table(name = "tariffs")
@@ -9,19 +10,13 @@ public class Tariff {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
     private int price;
-//    @ManyToOne(fetch = FetchType.EAGER)//при выгрузке перевозки выгружается и клиент
-//    @JoinColumn(name = "address_id", nullable = false)
+
     @Enumerated(EnumType.STRING)
     private Address address;
     @Enumerated(EnumType.STRING)
-//    @ManyToOne(fetch = FetchType.EAGER)
-//    @JoinColumn(name = "size_id", nullable = false)
     private Size size;
     @Enumerated(EnumType.STRING)
-//    @ManyToOne(fetch = FetchType.EAGER)
-//    @JoinColumn(name = "weight_id", nullable = false)
     private Weight weight;
 
     private Long deliveryTermDays;
@@ -72,5 +67,30 @@ public class Tariff {
 
     public void setDeliveryTermDays(Long deliveryTermDays) {
         this.deliveryTermDays = deliveryTermDays;
+    }
+
+    @Override
+    public String toString() {
+        return "Tariff{" +
+                "id=" + id +
+                ", price=" + price +
+                ", address=" + address +
+                ", size=" + size +
+                ", weight=" + weight +
+                ", deliveryTermDays=" + deliveryTermDays +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Tariff tariff = (Tariff) o;
+        return price == tariff.price && Objects.equals(id, tariff.id) && address == tariff.address && size == tariff.size && weight == tariff.weight && Objects.equals(deliveryTermDays, tariff.deliveryTermDays);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, price, address, size, weight, deliveryTermDays);
     }
 }

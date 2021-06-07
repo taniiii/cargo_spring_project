@@ -23,8 +23,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @Sql(value = {"/create-user-before.sql", "/table_tariff_before.sql", "/transportations-list-before.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 @Sql(value = {"/transportations-list-after.sql", "/table_tariff_after.sql", "/create-user-after.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-@TestPropertySource("/application-test.properties")//к этой бд система будем подключаться при тестировании
-@WithUserDetails("test") //для авторизации юзера, передаем имя юзера под кот. хотим проводить тесты
+@TestPropertySource("/application-test.properties")
+@WithUserDetails("test")
 @AutoConfigureMockMvc
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -37,10 +37,10 @@ public class AdminControllerTest {
     @Test
     public void allTransportationsAdminPageTest() throws Exception {
         this.mockMvc.perform(get("/orders"))
-                .andDo(print())  //проверяет, что пользователь был корректно аутентифицирован
+                .andDo(print())
                 .andExpect(SecurityMockMvcResultMatchers.authenticated())
                 .andExpect(xpath("/html/body/div[1]/div/nav/div/div[2]").string("test"));
-    }         //этот путь скопирован у залогиненого пользователя в навбаре inspect->copy->xPath
+    }
 
     @Test
     public void transportationsListTest() throws Exception{
@@ -48,14 +48,14 @@ public class AdminControllerTest {
                 .andDo(print())
                 .andExpect(SecurityMockMvcResultMatchers.authenticated())
                 .andExpect(xpath("//div[@id='transportations-list']/table/tbody/tr").nodeCount(4));
-    } //этот путь скопирован у залогиненого пользователя на main inspect->copy->xPath через/ добавляем путь к эл-там (это сами перевозки)
-
-        @Test    //TODO скорее всего потом убрать т к уйдёт фильтр
-    public void filterCommentTest() throws Exception {
-        this.mockMvc.perform(get("/orders").param("filter", "France"))
-                .andDo(print())
-                .andExpect(SecurityMockMvcResultMatchers.authenticated())//польз-ль должен быть авторизов.
-                .andExpect(xpath("//div[@id='transportations-list']/table/tbody/tr").nodeCount(2))
-                .andExpect(xpath("//div[@id='transportations-list']/table/tbody/tr").exists());
     }
+
+//        @Test
+//    public void filterCommentTest() throws Exception {
+//        this.mockMvc.perform(get("/orders").param("filter", "France"))
+//                .andDo(print())
+//                .andExpect(SecurityMockMvcResultMatchers.authenticated())//польз-ль должен быть авторизов.
+//                .andExpect(xpath("//div[@id='transportations-list']/table/tbody/tr").nodeCount(2))
+//                .andExpect(xpath("//div[@id='transportations-list']/table/tbody/tr").exists());
+//    }
 }

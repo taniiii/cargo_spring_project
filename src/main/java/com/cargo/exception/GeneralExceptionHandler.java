@@ -30,13 +30,19 @@ public class GeneralExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(errorMessage, new HttpHeaders(), e.getStatus());
     }
 
+//    @ExceptionHandler(ConstraintViolationException.class)
+//    public ResponseEntity<Object> handleConstraintViolationException(ConstraintViolationException e){
+//        String errorMessage = e.getConstraintViolations().stream()
+//                .filter(Objects::nonNull)
+//                .findFirst()
+//                .map(ConstraintViolation::getMessage)
+//                .orElseGet(BAD_REQUEST::getReasonPhrase);
+//        return new ResponseEntity<>(errorMessage, new HttpHeaders(), BAD_REQUEST);
+//    }
+
     @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<Object> handleConstraintViolationException(ConstraintViolationException e){
-        String errorMessage = e.getConstraintViolations().stream()
-                .filter(Objects::nonNull)
-                .findFirst()
-                .map(ConstraintViolation::getMessage)
-                .orElseGet(BAD_REQUEST::getReasonPhrase);
+    public ResponseEntity<String> handleConstraintViolationException(ConstraintViolationException e){
+        String errorMessage = "Incorrect input, please follow the form restrictions";
         return new ResponseEntity<>(errorMessage, new HttpHeaders(), BAD_REQUEST);
     }
 

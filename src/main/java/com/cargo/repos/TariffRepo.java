@@ -13,5 +13,5 @@ public interface TariffRepo extends JpaRepository<Tariff, Long> {
 
     Tariff findTariffByAddressEqualsAndSizeEqualsAndWeightEquals(Address address, Size size, Weight weight);
 
-    Tariff findFirstByAddressEquals(Address address); //findTariffByAddressEquals
+    Tariff findFirstByAddressEquals(Address address);
 }

@@ -13,42 +13,37 @@ import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 
 import java.util.Locale;
 
-@Configuration         //конфигурация web-слоя
+@Configuration
 public class MvcConfig implements WebMvcConfigurer {
     public void addViewControllers(ViewControllerRegistry registry) {
         registry.addViewController("/login").setViewName("login");
-    } //предоставляет систему авторизации, необходимо только активировать её
-    //Spring Boot automatically secures all HTTP endpoints with “basic” authentication
+    }
 
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/static/**")
-                .addResourceLocations("classpath:/static/"); //при обращении по этому пути ресурсы
-    }                                                        //будут искаться в дереве проекта
+                .addResourceLocations("classpath:/static/");
+    }
 
     @Bean
     public LocaleResolver localeResolver(){
-//        SessionLocaleResolver localeResolver = new SessionLocaleResolver();
-//        /*   можно и через куки
+
         CookieLocaleResolver clr = new CookieLocaleResolver();
         clr.setDefaultLocale(Locale.US);
         clr.setCookieName("language");
 
-//         */
-//        localeResolver.setDefaultLocale(Locale.ENGLISH);
-//        return localeResolver;
         return clr;
     }
 
-    @Bean     //переключатель локалей, в зависимости от параметра "language"
+    @Bean
     public LocaleChangeInterceptor localeChangeInterceptor(){
         LocaleChangeInterceptor localeChangeInterceptor = new LocaleChangeInterceptor();
-//        localeChangeInterceptor.setParamName("language");
+
         return localeChangeInterceptor;
     }
 
-    @Override  //добавляем переключатель в registry
+    @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(localeChangeInterceptor());
     }

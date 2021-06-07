@@ -22,7 +22,7 @@ public class UserServiceTest {
     @Autowired
     private UserService userService;
 
-    @MockBean         //создаем подменный объект бд
+    @MockBean
     private UserRepo userRepo;
     @MockBean
     private PasswordEncoder passwordEncoder;
@@ -32,9 +32,9 @@ public class UserServiceTest {
         User user = new User();
         boolean isUserCreated = userService.addUser(user);
 
-        Assert.assertTrue(isUserCreated);                    //проверяем, что установлена роль USER
+        Assert.assertTrue(isUserCreated);
         Assert.assertTrue(CoreMatchers.is(user.getRoles()).matches(Collections.singleton(Role.USER)));
-//проверяем сколько раз был вызван userRepo и было ли сохранение
+
         Mockito.verify(userRepo, Mockito.times(1)).save(user);
     }
 
@@ -42,7 +42,6 @@ public class UserServiceTest {
     public void createUserFail(){
         User user = new User();
         user.setUsername("noname");
-//эмулируем ответ БД, что такой юзер уже существует
         Mockito.doReturn(new User())
                 .when(userRepo)
                 .findByUsername("noname");
@@ -50,7 +49,7 @@ public class UserServiceTest {
         boolean isCreated = userService.addUser(user);
 
         Assert.assertFalse(isCreated);
-    //дополнительно проверяем, что новый пользователь не создан
+
         Mockito.verify(userRepo, Mockito.times(0)).save(user);
     }
 }

@@ -9,7 +9,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 import java.util.Collection;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -22,18 +24,19 @@ public class User implements UserDetails {
     @Length(max = 32, min = 1, message = "Name should be more then 1 and less then 30 characters")
     private String username;
     @NotBlank(message = "Password cannot be empty")
+    //@Pattern(regexp = "((?=.*\\d)(?=.*[A-Za-z]).{8,15})", message = "Password should contain latin letters and numbers (8 to 15 characters)")
     private String password;
     @Email(message = "Email is not correct")
     private String email;
-    private boolean active; //TODO  а надо оно вообще?
+    private boolean active;
 
-    @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER) //не будет доп.таблицы для хранения енама
+    @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
     @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))
     @Enumerated(EnumType.STRING)
     private Set<Role> roles;
 
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<Transportation> userTransportations; // List TODO
+    private Set<Transportation> userTransportations;
 
 
     public Long getId() {
@@ -107,5 +110,31 @@ public class User implements UserDetails {
 
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", email='" + email + '\'' +
+                ", active=" + active +
+                ", roles=" + roles +
+                ", userTransportations=" + userTransportations +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return active == user.active && Objects.equals(id, user.id) && Objects.equals(username, user.username) && Objects.equals(password, user.password) && Objects.equals(email, user.email) && Objects.equals(roles, user.roles) && Objects.equals(userTransportations, user.userTransportations);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, username, password, email, active, roles, userTransportations);
     }
 }

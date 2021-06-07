@@ -24,11 +24,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-                                //будет накатываться перед тестированием класса
+
 @Sql(value = {"/create-user-before.sql", "/table_tariff_before.sql", "/transportations-list-before.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 @Sql(value = {"/transportations-list-after.sql", "/table_tariff_after.sql", "/create-user-after.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-@TestPropertySource("/application-test.properties")//к этой бд система будем подключаться при тестировании
-@WithUserDetails("user") //для авторизации юзера, передаем имя юзера под кот. хотим проводить тесты
+@TestPropertySource("/application-test.properties")
+@WithUserDetails("user")
 @AutoConfigureMockMvc
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -57,7 +57,7 @@ public class TranspControllerTest {
                 .andDo(print())  //проверяет, что пользователь был корректно аутентифицирован
                 .andExpect(SecurityMockMvcResultMatchers.authenticated())
                 .andExpect(xpath("//div[@id='user-transportations-list']/table/tbody/tr").nodeCount(3));
-    }         //этот путь скопирован у залогиненого пользователя в навбаре inspect->copy->xPath
+    }
 
 //    @Test
 //    public void addTransportationTest() throws Exception{
@@ -68,11 +68,11 @@ public class TranspControllerTest {
 //                .andExpect(xpath("//div[@id='transportations-list']/table/tbody/tr").exists())
 //                .andExpect(xpath("//div[@id='transportations-list']/table/tbody/tr/td").string("Some new"));
 //    }
-     @Test
-     public void showNewTransportationForm() throws Exception {
-         this.mockMvc.perform(get("/showNewTransportationForm"))
-                 .andDo(print())
-                 .andExpect(SecurityMockMvcResultMatchers.authenticated())
-                 .andExpect(status().isOk());
-     }
+//     @Test
+//     public void showNewTransportationForm() throws Exception {
+//         this.mockMvc.perform(get("/showNewTransportationForm"))
+//                 .andDo(print())
+//                 .andExpect(SecurityMockMvcResultMatchers.authenticated())
+//                 .andExpect(status().isOk());
+//     }
 }

@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 @PreAuthorize("hasAuthority('ADMIN')")
 @Controller
 public class AdminController {
-    private static final Logger LOGG = LoggerFactory.getLogger(AdminController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AdminController.class);
 
     @Autowired
     TransportationService transportationService;
@@ -40,7 +40,7 @@ public class AdminController {
             @RequestParam(defaultValue = "id") String sortBy,
             @RequestParam(defaultValue = "asc") String sortDir){
 
-        LOGG.debug("Inside showAllTransportations().findTransportation() method");
+        LOGGER.info("Orders page is visited by administrator");
 
         Page<Transportation> page = transportationService.findTransportation(pageNo, pageSize, sortBy, sortDir);
 
@@ -75,7 +75,7 @@ public class AdminController {
 
             model.addAttribute("statusAvailable", TransportationStatus.values());
             model.addAttribute("transportation", tr);
-
+        LOGGER.info("Order status change page is visited by administrator, order id: " + tr.getId());
         return "transportationEdit";
     }
 
@@ -86,6 +86,7 @@ public class AdminController {
             @RequestParam String status
     ){
         transportationService.transportationUpdate(tr, status);
+        LOGGER.info("Order status is changed by administrator, order id: " + tr.getId());
         return "redirect:/orders";
     }
 }

@@ -19,9 +19,9 @@
     </div>
   </div>
 
-<form th:action="@{/registration}" method="post">
-  <div class="form-group row">
-    <label class="col-sm-2 col-form-label" th:text="#{user.name}"></label>
+  <form th:action="@{/registration}" method="post">
+    <div class="form-group row">
+      <label class="col-sm-2 col-form-label" th:text="#{user.name}"></label>
       <div class="col-sm-6">
         <input type="text" name="username" class="form-control ${(usernameError?)?string('is-invalid', '')}" placeholder="User name"/>
 
@@ -32,25 +32,25 @@
         </div>
 
       </div>
-  </div>
+    </div>
 
-  <div class="form-group row">
-    <label class="col-sm-2 col-form-label" th:text="#{password}"></label>
+    <div class="form-group row">
+      <label class="col-sm-2 col-form-label" th:text="#{password}"></label>
       <div class="col-sm-6">
-        <input type="password" name="password" class="form-control" placeholder="Password"/>
+        <input type="password" name="password" class="form-control  ${(passwordError?)?string('is-invalid', '')}" placeholder="Password"/>
         <small id="passwordHelp" class="form-text text-muted" th:text="#{registration.help}"></small>
       </div>
-  </div>
-
-  <div class="form-group row">
-    <label class="col-sm-2 col-form-label">Email: </label>
-    <div class="col-sm-6">
-      <input type="email" name="email" class="form-control" placeholder="some@some.com"/>
     </div>
-  </div>
 
-  <button type="submit" class="btn btn-secondary" th:text="#{register}"></button>
-</form>
+    <div class="form-group row">
+      <label class="col-sm-2 col-form-label">Email: </label>
+      <div class="col-sm-6">
+        <input type="email" name="email" class="form-control" placeholder="some@some.com"/>
+      </div>
+    </div>
+
+    <button type="submit" class="btn btn-secondary" th:text="#{register}"></button>
+  </form>
 
 </div>
 

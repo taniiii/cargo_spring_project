@@ -3,6 +3,8 @@ package com.cargo.controller;
 import com.cargo.model.transportation.*;
 import com.cargo.service.TariffService;
 import com.cargo.service.TransportationService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -17,7 +19,7 @@ import java.util.Map;
 
 @Controller
 public class MainController {
-
+    private static final Logger LOGGER = LoggerFactory.getLogger(MainController.class);
     @Autowired
     private TariffService tariffService;
 

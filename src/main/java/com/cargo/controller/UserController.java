@@ -3,6 +3,8 @@ package com.cargo.controller;
 import com.cargo.model.user.Role;
 import com.cargo.model.user.User;
 import com.cargo.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -23,6 +25,7 @@ import java.util.stream.Collectors;
 @Controller
 @RequestMapping("/user")
 public class UserController {
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
     @Autowired
     private UserService userService;
     @Autowired
@@ -32,6 +35,7 @@ public class UserController {
     @GetMapping
     public String userList(Model model){
         model.addAttribute("userList", userService.findAll());
+        LOGGER.info("All users page was visited by administrator");
         return "userList";
     }
 
@@ -42,6 +46,7 @@ public class UserController {
         User user = userService.findById(id);
         model.addAttribute("user", user);
         model.addAttribute("roles", Role.values());
+        LOGGER.info("User status edit page was visited by administrator");
         return "useredit";
     }
 
@@ -55,6 +60,7 @@ public class UserController {
         user.getRoles().add(Role.valueOf(role));
 
         userService.saveUser(user);
+        LOGGER.info("User status was changed, user id: " + user.getId());
         return "redirect:/user";
     }
 
@@ -63,6 +69,7 @@ public class UserController {
         model.addAttribute("username", user.getUsername());
         model.addAttribute("email", user.getEmail());
 
+        LOGGER.info("User profile page was visited by user " + user.getUsername());
         return "profile";
     }
 
@@ -70,14 +77,13 @@ public class UserController {
     @PostMapping("/profile")
     public String updateProfile(
             @AuthenticationPrincipal User user,
-            @RequestParam("password") @Pattern(regexp = "((?=.*\\d)(?=.*[A-Za-z]).{8,15})") String password,
-            @RequestParam("email") @Pattern(regexp = "(\\w+@[a-zA-Z_]+?\\.[a-zA-Z]{2,6})") String email) {
-
+            @RequestParam("password") String password,
+            @RequestParam("email") String email) {
         user.setEmail(email);
         user.setPassword(passwordEncoder.encode(password));
 
         userService.saveUser(user);
-
+        LOGGER.info("User profile was updated, user: " + user.getUsername());
         return "redirect:/user/profile";
     }
 

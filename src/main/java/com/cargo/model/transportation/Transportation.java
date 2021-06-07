@@ -8,6 +8,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.time.LocalDate;
+import java.util.Objects;
 
 @Entity
 @Table(name = "transportations")
@@ -19,7 +20,7 @@ public class Transportation{
     @Length(max=2048, message = "Message is too long (size more 2kB)")
     private String comment;
 
-    @ManyToOne(fetch = FetchType.EAGER)//при выгрузке перевозки выгружается и клиент
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User customer;
 
@@ -100,4 +101,29 @@ public class Transportation{
         this.deliveryDate = deliveryDate;
     }
 
+    @Override
+    public String toString() {
+        return "Transportation{" +
+                "id=" + id +
+                ", comment='" + comment + '\'' +
+                ", customer=" + customer +
+                ", tariff=" + tariff +
+                ", status=" + status +
+                ", creationDate=" + creationDate +
+                ", deliveryDate=" + deliveryDate +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Transportation that = (Transportation) o;
+        return Objects.equals(id, that.id) && Objects.equals(comment, that.comment) && Objects.equals(customer, that.customer) && Objects.equals(tariff, that.tariff) && status == that.status && Objects.equals(creationDate, that.creationDate) && Objects.equals(deliveryDate, that.deliveryDate);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, comment, customer, tariff, status, creationDate, deliveryDate);
+    }
 }

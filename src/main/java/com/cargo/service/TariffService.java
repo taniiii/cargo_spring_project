@@ -16,24 +16,23 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
 import java.util.List;
 
 
 @Service
 public class TariffService {
-    private static final Logger logger = LoggerFactory.getLogger(TariffService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TariffService.class);
 
     @Autowired
     private TariffRepo tariffRepo;
 
     public List<Tariff> findAll(){
-        logger.debug("Loading all tariffs with findAll() method");
+        LOGGER.info("Loading all tariffs with findAll() method");
         return tariffRepo.findAll();
     }
 
     public Page<Tariff> findPaginated(int pageNo, int pageSize, String sortField, String sortDirection){
-        logger.debug("Loading all tariffs paginated with findPaginated() method");
+        LOGGER.debug("Loading all tariffs with findPaginated() method");
         Sort sort = sortDirection.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortField).ascending() :
                 Sort.by(sortField).descending();
 
@@ -41,15 +40,4 @@ public class TariffService {
         return tariffRepo.findAll(pageable);
     }
 
-//    public Tariff findTariff(String address, String size, String weight){
-//
-//        return tariffRepo.findTariffByAddressEqualsAndSizeEqualsAndWeightEquals(
-//                Address.valueOf(address), Size.valueOf(size), Weight.valueOf(weight));
-//
-//    }
-//
-//    public Long findDeliveryTerm(String address){
-//        Tariff t = tariffRepo.findFirstByAddressEquals(Address.valueOf(address));
-//        return t.getDeliveryTermDays();
-//    }
 }
